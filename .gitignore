@@ -1,0 +1,16 @@
+# Python (bezpečný základ)
+__pycache__/
+*.py[cod]
+.venv/
+.env
+
+# macOS
+.DS_Store
+
+# Editor
+.vscode/
+.history/
+
+# Velké složky / výstupy (přidej/odeber podle sebe)
+data/
+screenshots/
