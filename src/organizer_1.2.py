@@ -14,15 +14,24 @@ import json
 import imagehash
 
 # Import kategorií ze samostatného souboru
-from categories import CATEGORIES, WORD_WEIGHTS, SOCIAL_MEDIA_UI_KEYWORDS
+from categories_v1 import CATEGORIES, WORD_WEIGHTS, SOCIAL_MEDIA_UI_KEYWORDS
 from unidecode import unidecode  # pip install Unidecode
 
 register_heif_opener()
 
+# ========================================================================
 # NASTAVENÍ
+# ========================================================================
 MAX_TEST_FILES = 100
-SOURCE_FOLDER = "/Volumes/Elements2023/Screenshot Organizer/screenshots"
 
+# VÝCHOZÍ CESTA (použije se pouze pokud nezadáš --input_dir)
+# Doporučení: Vždy používej --input_dir při spuštění:
+# python3 organizer_1.1.py --input_dir "/tvoje/cesta/screenshots"
+DEFAULT_SOURCE_FOLDER = "/Volumes/Elements2023/Screenshot Organizer/screenshots"
+
+# ========================================================================
+# FUNKCE
+# ========================================================================
 
 def filter_social_media_ui_text(text):
     """
@@ -504,7 +513,6 @@ def categorize_text(text, debug=False):
         return "Vychova_Deti", all_matched_vychova
 
     # PRAVIDLO 7: Zdraví
-    # PRAVIDLO 7: Zdravi - vyžaduje 2+ triggery NEBO 1 velmi specifický
     zdravi_very_specific = [
         # ===== MEDICÍNA =====
         "lek", "leky", "medication", "pills",
@@ -569,7 +577,6 @@ def categorize_text(text, debug=False):
             print(f"   Matched keywords: {all_matched_zdravi}")
         return "Zdravi", all_matched_zdravi
 
-    # PRAVIDLO 8: IT_Prace (podcast + IT context)
     # PRAVIDLO 8: IT_Prace - vyžaduje 2+ triggery NEBO 1 velmi specifický
     it_prace_very_specific = [
         # ===== VELMI SPECIFICKÉ IT NÁSTROJE =====
@@ -893,7 +900,7 @@ def categorize_text(text, debug=False):
     toy_keywords = ["stavebnice", "hracka", "hra", "puzzle", "lego", "vrtacka"]
     has_toy_context = any(normalize_text_simple(k) in tokens for k in toy_keywords)
 
-    # ===== VÁHOVANÉ BODOVÁNÍ (scoring) =====
+    # ===== VÁŽOVANÉ BODOVÁNÍ (scoring) =====
     scores = {}
     matches_for_category = {}
 
@@ -910,7 +917,7 @@ def categorize_text(text, debug=False):
                 weighted_score += weight
                 matched.append((k_norm, weight))
         scores[category] = weighted_score
-        # ulož top matched tokeny (max 5)
+        # uložíme top matched tokeny (max 5)
         matches_for_category[category] = [m[0] for m in sorted(matched, key=lambda x: x[1], reverse=True)[:5]]
 
     # ===== NEGATIVE HINTS (penalizace chybných kategorií) =====
@@ -974,17 +981,41 @@ def dry_run_test(folder=None, max_test_files=100, sample=None, debug=False):
     print("🧪 DRY RUN TEST - FILTROVÁNÍ SOCIAL MEDIA UI + OCR improvements")
     print("=" * 70)
     
-    SOURCE = folder if folder else SOURCE_FOLDER
+    # ========================================================================
+    # VYLEPŠENÍ: Kontrola složky a lepší error handling
+    # ========================================================================
+    if folder:
+        SOURCE = folder
+        print(f"📁 Používám zadanou cestu: {SOURCE}")
+    else:
+        SOURCE = DEFAULT_SOURCE_FOLDER
+        print(f"⚠️  POZOR: Používám výchozí cestu!")
+        print(f"   {SOURCE}")
+        print(f"   💡 Doporučení: Použij --input_dir při spuštění\n")
 
+    # Kontrola existence složky
     if not os.path.exists(SOURCE):
-        print(f"❌ Složka neexistuje: {SOURCE}")
+        print(f"\n❌ CHYBA: Složka neexistuje!")
+        print(f"   Cesta: {SOURCE}")
+        print(f"\n💡 ŘEŠENÍ:")
+        print(f"   1. Zkontroluj, že je externí disk připojený")
+        print(f"   2. Nebo použij --input_dir s platnou cestou:")
+        print(f"      python3 organizer_1.1.py --input_dir \"/tvoje/cesta\"")
+        return
+
+    # Kontrola, že je to opravdu složka (ne soubor)
+    if not os.path.isdir(SOURCE):
+        print(f"\n❌ CHYBA: Cesta není složka!")
+        print(f"   Cesta: {SOURCE}")
         return
 
     all_files = [f for f in os.listdir(SOURCE) if is_image_file(f)]
     total_files = len(all_files)
 
     if total_files == 0:
-        print(f"❌ Ve složce nejsou žádné obrázky!")
+        print(f"\n❌ Ve složce nejsou žádné obrázky!")
+        print(f"   Cesta: {SOURCE}")
+        print(f"\n💡 Podporované formáty: .heic, .jpg, .jpeg, .png")
         return
 
     # náhodný vzorek nebo prvních N
@@ -996,7 +1027,6 @@ def dry_run_test(folder=None, max_test_files=100, sample=None, debug=False):
     else:
         test_files = all_files[:max_test_files]
 
-    print(f"📁 Testovací složka: {SOURCE}")
     print(f"📊 Nalezeno souborů: {total_files}")
     print(f"🧪 Testuji: {len(test_files)} souborů")
     if sample:
@@ -1099,8 +1129,8 @@ if __name__ == "__main__":
     parser.add_argument(
         "--input_dir",
         type=str,
-        default="screenshots",
-        help="Cesta ke složce se screenshoty (default: ./screenshots)"
+        default=None,  # ZMĚNA: default=None místo "screenshots"
+        help="Cesta ke složce se screenshoty (povinné doporučení)"
     )
     parser.add_argument(
         "--sample",
@@ -1117,17 +1147,28 @@ if __name__ == "__main__":
 
     input_dir = args.input_dir
 
-    if not os.path.exists(input_dir):
-        print(f"❌ Složka '{input_dir}' neexistuje.")
-        exit(1)
+    # ========================================================================
+    # VYLEPŠENÍ: Lepší zprávy a kontrola
+    # ========================================================================
+    if not input_dir:
+        print("\n⚠️  VAROVÁNÍ: Nezadal jsi --input_dir")
+        print(f"   Použiji výchozí cestu: {DEFAULT_SOURCE_FOLDER}")
+        print(f"\n💡 DOPORUČENÍ: Vždy zadávej cestu:")
+        print(f"   python3 organizer_1.1.py --input_dir \"/tvoje/cesta\"\n")
+        input_dir = DEFAULT_SOURCE_FOLDER
 
     # Vyber náhodný vzorek, pokud je --sample zadán
-    files = [f for f in os.listdir(input_dir) if is_image_file(f)]
-    
-    if args.sample:
-        print(f"➡️ Použit náhodný vzorek {min(args.sample, len(files))} obrázků ze složky '{input_dir}'\n")
+    if os.path.exists(input_dir):
+        files = [f for f in os.listdir(input_dir) if is_image_file(f)]
+        
+        if args.sample:
+            print(f"➡️ Použit náhodný vzorek {min(args.sample, len(files))} obrázků ze složky '{input_dir}'\n")
+        else:
+            print(f"➡️ Zpracovávám všech {len(files)} obrázků ze složky '{input_dir}'\n")
     else:
-        print(f"➡️ Zpracovávám všech {len(files)} obrázků ze složky '{input_dir}'\n")
+        print(f"\n❌ Složka neexistuje: {input_dir}")
+        print(f"\n💡 Zkontroluj cestu nebo připoj externí disk")
+        exit(1)
 
     # Spuštění dry run testu
     dry_run_test(

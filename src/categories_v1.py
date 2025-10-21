@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 Kategorie a klíčová slova pro organizaci screenshotů
+OPRAVENÁ VERZE - odstraněno "it", "ai", "nordic" jako samostatná slova
 """
 
 # UI PRVKY ZE SOCIÁLNÍCH MÉDIÍ - budou ignorovány při kategorizaci
@@ -42,9 +43,20 @@ WORD_WEIGHTS = {
     "slowcooker": 10, "slow cooker": 10,
     "geoboard": 10, "didaktická pomůcka": 10, "didakticka pomucka": 10,
     
+    # NOVĚ PŘIDANÉ VÁHY
+    "nordic cuisine": 8,
+    "scandinavian cuisine": 8,
+    "danish recipe": 7,
+    "traditional dish": 5,
+    "sailor stew": 7,
+    "stew": 3,
+    "nordic style": 7,
+    "nordic design": 7,
+    "nordic interior": 7,
+    
     # 5 bodů - STŘEDNĚ SPECIFICKÉ (hlavní slova kategorie)
     "tester": 5, "testing": 5, "test": 5, "coding": 5, "python": 5, "javascript": 5,
-    "craft": 5, "crafting": 5, "vyrábění": 5, "vyrabeni": 5, "malování": 5, "malovani": 5,
+    "craft": 5, "crafting": 5, "výrábění": 5, "vyrabeni": 5, "malování": 5, "malovani": 5,
     "psycholog": 5, "parenting": 5, "výchova": 5, "vychova": 5, "tantrum": 5,
     "kalhoty": 5, "mikina": 5, "boty": 5, "šaty": 5, "saty": 5, "kabát": 5, "kabat": 5,
     "bunda": 5, "jacket": 5, "oblečení": 5, "obleceni": 5,
@@ -72,14 +84,14 @@ WORD_WEIGHTS = {
     "nový": 1, "novy": 1, "new": 1,
     "meal": 1, "meals": 1, "plan": 1, "plans": 1,
     "body": 1, "results": 1, "result": 1,
-    "outdoor": 1, "living": 1  # Nízká váha - záleží na kontextu!
+    "outdoor": 1, "living": 1
 }
 
 # KATEGORIE - KOMPLETNÍ KLÍČOVÁ SLOVA
 CATEGORIES = {
     "Deti_Aktivity": [
         "craft", "crafting", "crafts", "tvoření", "tvoreni",
-        "vyrábění", "vyrabeni", "making", "diy", "handmade",
+        "výrábění", "vyrabeni", "making", "diy", "handmade",
         "děti", "deti", "kids", "children", "child",
         "obrázek", "obrazek", "obrázky", "obrazky", "picture", "drawing",
         "malování", "malovani", "painting", "paint", "coloring",
@@ -115,7 +127,7 @@ CATEGORIES = {
         "chování", "chovani", "behavior", "behaviour", "discipline", "disciplína", "disciplina",
         "komunikace", "communication", "mluvení", "mluveni", "talking",
         "hranice", "boundaries", "limits", "pravidla", "rules",
-        "sourozenec", "sourozenecký", "sourozenci", "sibling", "siblings",
+        "sourozenec", "sourozený", "sourozenci", "sibling", "siblings",
         "školka", "skolka", "škola", "skola", "school", "preschool", "adaptation",
         "spánek", "spanek", "sleep", "sleeping", "routine", "rutina",
         "montessori", "waldorf", "pedagogika", "education",
@@ -130,12 +142,15 @@ CATEGORIES = {
     
     "IT_Prace": [
         # 🧠 Obecné / kariéra / komunita
-        "it", "ajťák", "ajtak", "ajťačka", "ajtacka", "holky v it", "zeny v it", "ženy v it",
+        # ✅ OPRAVENO: Odstraněno "it" a "ai" jako samostatná slova
+        "ajťák", "ajtak", "ajtačka", "ajtacka",
+        "holky v it", "zeny v it", "ženy v it",
         "women in tech", "women go tech", "womenwhocode", "girls who code",
         "female engineer", "female developer", "dev girl", "coder girl", "tech girl",
         "career switch", "career pivot", "career in tech", "tech career", "techlife", "work in tech",
         "digital skills", "digitální dovednosti", "digitalni dovednosti",
-        "it svět", "it svet", "it kariera", "kariera v it", "rekvalifikace it",
+        "it svet", "it kariera", "kariera v it", "rekvalifikace it",
+        "it rekvalifikace", "it industry", "it field",
         "junior tester", "junior developer", "junior coder",
         "tech recruiter", "it recruiter", "linkedin", "cv", "resume", "portfolio", "career tips",
         "self learning", "learning tech", "bootcamp", "coding bootcamp", "tech course",
@@ -155,6 +170,7 @@ CATEGORIES = {
         "data loss prevention", "dark web", "cyber hygiene",
         
         # 🤖 Umělá inteligence / automatizace / data
+        # ✅ OPRAVENO: "ai" odstraněno, zachováno "artificial intelligence" a fráze s "ai"
         "machine learning", "deep learning", "neural network", "neuronová síť", "neuronova sit",
         "data science", "data analyst", "data analysis", "datová analýza", "datova analyza",
         "visualization", "vizualizace dat", "big data", "analytics",
@@ -164,6 +180,7 @@ CATEGORIES = {
         "robotic process automation", "macro", "script", "scripting", "workflow automation",
         "zapier", "make com", "integromat", "integration", "power automate",
         "no code", "low code", "nocode", "lowcode",
+        "artificial intelligence",
         
         # 💡 Programování / vývoj / nástroje
         "developer life", "devlife", "debug", "debugging",
@@ -179,7 +196,7 @@ CATEGORIES = {
         "django", "flask", "fastapi", "express", "npm", "yarn", "package", "dependency",
         "virtualenv", "venv",
         
-        # 🧩 QA / Testování (původní + doplnění)
+        # 🧩 QA / Testování
         "qa", "quality assurance", "tester", "testing", "test",
         "bug", "issue", "defect", "chyba",
         "jira", "confluence", "agile", "scrum", "sprint",
@@ -187,7 +204,6 @@ CATEGORIES = {
         "sql", "database", "databáze", "databaze", "query", "dotaz",
         "cybersecurity", "security", "bezpečnost", "bezpecnost", "cyber",
         "změna profese", "zmena profese", "career change", "rekvalifikace", "retraining",
-        "ai", "artificial intelligence", "umělá inteligence", "umela inteligence",
         "chatgpt", "gpt", "claude", "copilot", "gemini",
         "czechitas", "coding", "programování", "programovani",
         "python", "javascript", "html", "react", "code",
@@ -262,7 +278,7 @@ CATEGORIES = {
         "fyzio", "fyzioterapie", "physiotherapy", "physio", "rehab", "rehabilitace",
         "porod", "po porodu", "postpartum", "after birth", "pregnancy",
         "těhotenství", "tehotenstvi", "pregnant", "těhotná", "tehotna",
-        "pánevní", "panevni", "pelvic", "floor", "dno",
+        "panevni dno", "pelvic floor",  # ✅ BEZ háčků!
         "doktor", "doctor", "lékař", "lekar", "physician", "specialist",
         "bolest", "pain", "ache", "záda", "zada", "back", "klouby", "joints",
         "prevence", "prevention", "preventive", "screening",
@@ -284,7 +300,7 @@ CATEGORIES = {
     "Dum_Design": [
         # 🏗️ Stavba a architektura
         "stavba", "building", "výstavba", "vystavba", "novostavba",
-        "rekonstrukce", "renovation", "přestavba", "prestavba", "rekonštrukce",
+        "rekonstrukce", "renovation", "přestavba", "prestavba", "rekonstrukce",
         "dům", "dum", "house", "home", "byt", "flat", "apartment",
         "architektura", "architecture", "architekt", "projekt", "projektování", "projektovani",
         "návrh domu", "navrh domu", "plán domu", "plan domu",
@@ -313,7 +329,11 @@ CATEGORIES = {
         "lampa", "lamp", "lustre", "stropní světlo", "stropni svetlo",
         "obraz", "obrazy", "picture", "art", "wall art", "poster", "print",
         "styling", "style", "design", "interior", "interiér", "interier",
-        "scandi", "scandinavian", "nordic", "minimalist", "minimalistický", "minimalisticky",
+        # ✅ OPRAVENO: Odstraněno samostatné "nordic", přidány specifické fráze
+        "scandi", "scandinavian",
+        "scandi style", "scandinavian style", "scandinavian design",
+        "nordic style", "nordic design", "nordic interior",
+        "minimalist", "minimalistický", "minimalisticky",
         "boho", "bohemian", "industrial", "modern", "rustic", "vintage", "retro", "elegant", "contemporary",
         "japandi", "natural style", "wood accent", "přírodní materiály", "prirodni materialy",
         "barvy", "colors", "paint", "malování", "malovani", "barevná paleta", "barevna paleta",
@@ -400,7 +420,7 @@ CATEGORIES = {
         "gravel mulch", "štěrkový mulč",
         
         # 🌾 5. Povrchy, materiály a cesty
-        "limestone", "vápencový kámen", "chippings", "štěrkové cesty",
+        "limestone", "vápenový kámen", "chippings", "štěrkové cesty",
         "pavers", "dlaždice", "paving", "chodník",
         "neutral tones", "natural stone", "pathway", "garden path",
         "mulč", "mulc", "mulching",
@@ -563,7 +583,12 @@ CATEGORIES = {
         "mealplan", "jídelní plán", "jidelni plan",
         "low carb", "keto", "paleo", "whole30", "macro",
         "kalorie", "calories", "high protein", "bez cukru", "no sugar",
-        "skillet", "one pot", "sheet pan", "chorizo", "creamy", "sundried tomato"
+        "skillet", "one pot", "sheet pan", "chorizo", "creamy", "sundried tomato",
+        
+        # ✅ NOVĚ PŘIDÁNO: Kuchyňské styly
+        "nordic cuisine", "scandinavian cuisine", "new nordic",
+        "danish recipe", "danish cuisine", "norwegian recipe", "swedish recipe",
+        "traditional dish", "sailor stew", "stew", "stew recipe"
     ],
     
     "Obleceni_Styl": [
@@ -643,7 +668,7 @@ CATEGORIES = {
         "literatura", "literature", "čtenářství", "ctenarstvi",
         "čtenářský deník", "ctenarsky denik", "reading journal", "reading log",
         
-        # ✍️ Autoři, hodnocení a doporučení / Authors & Reviews
+        # ✏️ Autoři, hodnocení a doporučení / Authors & Reviews
         "autor", "author", "writer", "spisovatel", "spisovatelka", "autor knihy",
         "recenze", "review", "hodnocení", "hodnoceni", "rating", "reviewer",
         "doporučení", "doporuceni", "recommendation", "recommended",
@@ -695,7 +720,7 @@ CATEGORIES = {
         "oblíbené", "oblibene", "favorite", "favourite",
         "téma", "tema", "topic", "subject",
         "rozhovor", "interview", "talk", "discussion",
-        "séria", "seria", "series", "show",
+        "série", "seria", "series", "show",
         "top", "best", "must listen",
         "show notes", "timestamps", "episode notes",
         "poslech na cestu", "podcast tip"
@@ -720,7 +745,7 @@ CATEGORIES = {
         "snow", "snowflake", "sníh", "snih", "zima", "winter",
         "svíčka", "svicka", "candles",
         
-        # 🐣 Velikonoce / Easter
+         # 🐣 Velikonoce / Easter
         "easter", "velikonoce", "pomlázka", "pomlazka",
         "vajíčko", "vajicko", "egg", "eggs", "easter egg",
         "beránek", "beranek", "králíček", "kralicek", "bunny", "rabbit",
